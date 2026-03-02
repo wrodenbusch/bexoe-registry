@@ -7,6 +7,7 @@ import type { ExtensionQueryRequest } from './types.js';
 
 export function createApp(baseUrl?: string): express.Express {
 	const app = express();
+	app.set('trust proxy', true);
 	app.use(express.json());
 
 	// POST /api/extensionquery — main search/browse endpoint
