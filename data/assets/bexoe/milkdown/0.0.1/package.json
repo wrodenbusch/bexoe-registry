@@ -1,0 +1,232 @@
+{
+    "name": "milkdown",
+    "icon": "logo.png",
+    "displayName": "Milkdown",
+    "description": "Edit markdown in a WYSIWYG way, powered by milkdown.",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.74.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Saul-Mirone/milkdown-vscode.git"
+    },
+    "categories": [
+        "Visualization",
+        "Programming Languages"
+    ],
+    "activationEvents": [
+        "onLanguage:markdown"
+    ],
+    "keywords": [
+        "markdown",
+        "milkdown",
+        "wysiwyg"
+    ],
+    "main": "./dist/extension.js",
+    "publisher": "bexoe",
+    "contributes": {
+        "customEditors": [
+            {
+                "viewType": "milkdown.editor",
+                "displayName": "Milkdown Editor",
+                "selector": [
+                    {
+                        "filenamePattern": "*.md"
+                    }
+                ],
+                "priority": "option"
+            }
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "when": "resourceLangId == markdown",
+                    "command": "milkdown.open",
+                    "group": "navigation"
+                }
+            ],
+            "editor/context": [
+                {
+                    "when": "resourceLangId == markdown",
+                    "command": "milkdown.open",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "milkdown.open",
+                "title": "Open with Milkdown",
+                "category": "Milkdown"
+            }
+        ],
+        "keybindings": [
+            {
+                "key": "ctrl+b",
+                "mac": "cmd+b",
+                "command": "extension.milkdown.bold",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+i",
+                "mac": "cmd+i",
+                "command": "extension.milkdown.italic",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+e",
+                "mac": "cmd+e",
+                "command": "extension.milkdown.inline_code",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+x",
+                "mac": "cmd+alt+x",
+                "command": "extension.milkdown.strike_through",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+0",
+                "mac": "cmd+alt+0",
+                "command": "extension.milkdown.text",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+1",
+                "mac": "cmd+alt+1",
+                "command": "extension.milkdown.h1",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+2",
+                "mac": "cmd+alt+2",
+                "command": "extension.milkdown.h2",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+3",
+                "mac": "cmd+alt+3",
+                "command": "extension.milkdown.h3",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+4",
+                "mac": "cmd+alt+4",
+                "command": "extension.milkdown.h4",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+5",
+                "mac": "cmd+alt+5",
+                "command": "extension.milkdown.h5",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+6",
+                "mac": "cmd+alt+6",
+                "command": "extension.milkdown.h6",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+7",
+                "mac": "cmd+alt+7",
+                "command": "extension.milkdown.ordered_list",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+8",
+                "mac": "cmd+alt+8",
+                "command": "extension.milkdown.bullet_list",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+9",
+                "mac": "cmd+alt+9",
+                "command": "extension.milkdown.task_list",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+[",
+                "mac": "cmd+[",
+                "command": "extension.milkdown.lift",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+]",
+                "mac": "cmd+]",
+                "command": "extension.milkdown.sink",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+enter",
+                "mac": "cmd+enter",
+                "command": "extension.milkdown.exit_block",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "shift+enter",
+                "command": "extension.milkdown.line_break",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+alt+c",
+                "mac": "cmd+alt+c",
+                "command": "extension.milkdown.code",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "tab",
+                "mac": "tab",
+                "command": "extension.milkdown.tab",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+z",
+                "mac": "cmd+z",
+                "command": "extension.milkdown.undo",
+                "when": "milkdown.active && !inDebugRepl"
+            },
+            {
+                "key": "ctrl+shift+z",
+                "mac": "cmd+shift+z",
+                "command": "extension.milkdown.redo",
+                "when": "milkdown.active && !inDebugRepl"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "compile": "tsup",
+        "package": "tsup",
+        "watch": "tsup --watch src",
+        "pretest": "npm run tsc && npm run lint",
+        "lint:ox": "oxlint -c .oxlintrc.json",
+        "lint:ox:fix": "oxlint -c .oxlintrc.json --fix",
+        "lint:prettier": "prettier . --check",
+        "lint:prettier:fix": "prettier . --write",
+        "typecheck": "tsc --noEmit",
+        "vscode-package": "vsce package --no-dependencies"
+    },
+    "devDependencies": {
+        "@babel/runtime": "^7.26.7",
+        "@milkdown/crepe": "^7.6.2",
+        "@milkdown/kit": "^7.6.2",
+        "@types/lodash.throttle": "^4.1.9",
+        "@types/node": "~24.11.0",
+        "@types/vscode": "^1.59.0",
+        "@uiw/codemirror-theme-vscode": "^4.23.2",
+        "@vscode/vsce": "^3.2.2",
+        "concurrently": "^9.0.0",
+        "esbuild": "^0.27.0",
+        "glob": "^13.0.0",
+        "lodash.throttle": "^4.1.1",
+        "normalize.css": "^8.0.1",
+        "oxlint": "^1.0.0",
+        "prettier": "^3.0.0",
+        "rimraf": "^6.0.1",
+        "tsup": "^8.3.6",
+        "typescript": "^5.6.2"
+    },
+    "packageManager": "pnpm@10.30.3"
+}

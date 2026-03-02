@@ -1,0 +1,22 @@
+{
+    "name": "writer-environment",
+    "displayName": "Writer",
+    "description": "A distraction-free environment for writing and editing",
+    "version": "0.0.1",
+    "publisher": "bexoe",
+    "engines": {
+        "vscode": "^1.74.0"
+    },
+    "categories": [
+        "Extension Packs"
+    ],
+    "extensionPack": [
+        "bexoe.milkdown"
+    ],
+    "keywords": [
+        "writing",
+        "markdown",
+        "environment",
+        "pack"
+    ]
+}

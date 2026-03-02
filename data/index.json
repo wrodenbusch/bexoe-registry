@@ -1,0 +1,118 @@
+{
+  "extensions": [
+    {
+      "extensionId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "publisher": {
+        "publisherId": "bexoe-publisher-0001",
+        "publisherName": "bexoe",
+        "displayName": "Bexoe"
+      },
+      "extensionName": "milkdown",
+      "displayName": "Milkdown",
+      "shortDescription": "Edit markdown in a WYSIWYG way, powered by milkdown.",
+      "categories": ["Visualization", "Programming Languages"],
+      "tags": ["markdown", "wysiwyg", "editor", "writing", "milkdown"],
+      "versions": [
+        {
+          "version": "0.0.1",
+          "lastUpdated": "2026-03-02T00:00:00.000Z",
+          "files": [
+            {
+              "assetType": "Microsoft.VisualStudio.Services.VSIXPackage",
+              "source": ""
+            },
+            {
+              "assetType": "Microsoft.VisualStudio.Code.Manifest",
+              "source": ""
+            },
+            {
+              "assetType": "Microsoft.VisualStudio.Services.Content.Details",
+              "source": ""
+            },
+            {
+              "assetType": "Microsoft.VisualStudio.Services.Icons.Default",
+              "source": ""
+            },
+            {
+              "assetType": "Microsoft.VisualStudio.Services.Content.Changelog",
+              "source": ""
+            },
+            {
+              "assetType": "Microsoft.VisualStudio.Services.Content.License",
+              "source": ""
+            }
+          ],
+          "properties": [
+            {
+              "key": "Microsoft.VisualStudio.Code.Engine",
+              "value": "^1.74.0"
+            },
+            {
+              "key": "Microsoft.VisualStudio.Code.ExecutesCode",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "statistics": [
+        { "statisticName": "install", "value": 0 },
+        { "statisticName": "averagerating", "value": 5 },
+        { "statisticName": "ratingcount", "value": 0 }
+      ],
+      "releaseDate": "2026-03-02T00:00:00.000Z",
+      "publishedDate": "2026-03-02T00:00:00.000Z",
+      "lastUpdated": "2026-03-02T00:00:00.000Z"
+    },
+    {
+      "extensionId": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+      "publisher": {
+        "publisherId": "bexoe-publisher-0001",
+        "publisherName": "bexoe",
+        "displayName": "Bexoe"
+      },
+      "extensionName": "writer-environment",
+      "displayName": "Writer",
+      "shortDescription": "A distraction-free environment for writing and editing",
+      "categories": ["Extension Packs"],
+      "tags": ["writing", "markdown", "environment", "pack"],
+      "versions": [
+        {
+          "version": "0.0.1",
+          "lastUpdated": "2026-03-02T00:00:00.000Z",
+          "files": [
+            {
+              "assetType": "Microsoft.VisualStudio.Services.VSIXPackage",
+              "source": ""
+            },
+            {
+              "assetType": "Microsoft.VisualStudio.Code.Manifest",
+              "source": ""
+            },
+            {
+              "assetType": "Microsoft.VisualStudio.Services.Content.Details",
+              "source": ""
+            }
+          ],
+          "properties": [
+            {
+              "key": "Microsoft.VisualStudio.Code.Engine",
+              "value": "^1.74.0"
+            },
+            {
+              "key": "Microsoft.VisualStudio.Code.ExtensionPack",
+              "value": "bexoe.milkdown"
+            }
+          ]
+        }
+      ],
+      "statistics": [
+        { "statisticName": "install", "value": 0 },
+        { "statisticName": "averagerating", "value": 5 },
+        { "statisticName": "ratingcount", "value": 0 }
+      ],
+      "releaseDate": "2026-03-02T00:00:00.000Z",
+      "publishedDate": "2026-03-02T00:00:00.000Z",
+      "lastUpdated": "2026-03-02T00:00:00.000Z"
+    }
+  ]
+}
