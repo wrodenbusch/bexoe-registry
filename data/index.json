@@ -70,11 +70,11 @@
         "publisherName": "bexoe",
         "displayName": "Bexoe"
       },
-      "extensionName": "writer-environment",
-      "displayName": "Writer",
-      "shortDescription": "A distraction-free environment for writing and editing",
+      "extensionName": "default-pack",
+      "displayName": "Default Pack",
+      "shortDescription": "The baseline set of extensions included with Bexoe",
       "categories": ["Extension Packs"],
-      "tags": ["writing", "markdown", "environment", "pack"],
+      "tags": ["default", "pack", "writing", "markdown"],
       "versions": [
         {
           "version": "0.0.1",

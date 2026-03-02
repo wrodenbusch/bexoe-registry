@@ -1,6 +1,6 @@
-# Writer Environment
+# Default Pack
 
-A distraction-free environment for writing and editing in Bexoe.
+The baseline set of extensions included with Bexoe.
 
 ## Included Extensions
 

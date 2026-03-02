@@ -110,13 +110,13 @@ describe('POST /api/extensionquery', () => {
 		expect(data.results[0].resultMetadata[0].metadataItems[0].count).toBe(0);
 	});
 
-	it('finds writer extension pack', async () => {
+	it('finds default extension pack', async () => {
 		const res = await fetch(`${BASE}/api/extensionquery`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
 				filters: [{
-					criteria: [{ filterType: 10, value: 'writer' }],
+					criteria: [{ filterType: 10, value: 'default pack' }],
 					pageNumber: 1,
 					pageSize: 50,
 					sortBy: 0,
@@ -129,7 +129,7 @@ describe('POST /api/extensionquery', () => {
 		const data = await res.json();
 		expect(data.results[0].extensions).toHaveLength(1);
 		const ext = data.results[0].extensions[0];
-		expect(ext.displayName).toBe('Writer');
+		expect(ext.displayName).toBe('Default Pack');
 		// Check extension pack property
 		const packProp = ext.versions[0].properties.find(
 			(p: { key: string }) => p.key === 'Microsoft.VisualStudio.Code.ExtensionPack'
@@ -215,8 +215,8 @@ describe('GET /api/assets/:publisher/:name/:version/:assetType', () => {
 		expect(res.status).toBe(404);
 	});
 
-	it('serves writer extension pack VSIX', async () => {
-		const res = await fetch(`${BASE}/api/assets/bexoe/writer-environment/0.0.1/Microsoft.VisualStudio.Services.VSIXPackage`);
+	it('serves default pack VSIX', async () => {
+		const res = await fetch(`${BASE}/api/assets/bexoe/default-pack/0.0.1/Microsoft.VisualStudio.Services.VSIXPackage`);
 		expect(res.status).toBe(200);
 	});
 });

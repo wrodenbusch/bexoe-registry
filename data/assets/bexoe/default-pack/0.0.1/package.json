@@ -1,7 +1,7 @@
 {
-    "name": "writer-environment",
-    "displayName": "Writer",
-    "description": "A distraction-free environment for writing and editing",
+    "name": "default-pack",
+    "displayName": "Default Pack",
+    "description": "The baseline set of extensions included with Bexoe",
     "version": "0.0.1",
     "publisher": "bexoe",
     "engines": {
@@ -14,9 +14,9 @@
         "bexoe.milkdown"
     ],
     "keywords": [
+        "default",
+        "pack",
         "writing",
-        "markdown",
-        "environment",
-        "pack"
+        "markdown"
     ]
 }
