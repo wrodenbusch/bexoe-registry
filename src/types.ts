@@ -109,6 +109,28 @@ export interface ExtensionEntry {
 	releaseDate: string;
 	publishedDate: string;
 	lastUpdated: string;
+	// Bexoe ecosystem fields
+	branch?: string;
+	parentBranch?: string;
+	generatedBy?: 'claude-code' | 'manual';
+	generationPrompt?: string;
+}
+
+// Request body for POST /api/generate
+export interface GenerateRequest {
+	message: string;
+	extensionName?: string;
+	branch?: string;
+}
+
+// SSE event types for generation progress
+export interface GenerateEvent {
+	type: 'progress' | 'complete' | 'existing' | 'error';
+	message: string;
+	extensionId?: string;
+	extensionName?: string;
+	branch?: string;
+	version?: string;
 }
 
 export interface ExtensionVersion {

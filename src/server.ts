@@ -1,9 +1,12 @@
 import express from 'express';
 import { join } from 'node:path';
-import { existsSync, createReadStream, statSync } from 'node:fs';
+import { existsSync, createReadStream, statSync, rmSync, readFileSync } from 'node:fs';
 import { handleQuery } from './query.js';
-import { getDataDir, findExtensionByName } from './index.js';
-import type { ExtensionQueryRequest } from './types.js';
+import { getDataDir, findExtensionByName, searchExtensions, getExtensionSource } from './index.js';
+import { generateExtension, readGeneratedSource } from './generate.js';
+import { publishExtension } from './publish.js';
+import { deriveExtensionName } from './generate-prompt.js';
+import type { ExtensionQueryRequest, GenerateRequest, GenerateEvent } from './types.js';
 
 export function createApp(baseUrl?: string): express.Express {
 	const app = express();
@@ -95,12 +98,150 @@ export function createApp(baseUrl?: string): express.Express {
 		createReadStream(filePath).pipe(res);
 	});
 
+	// POST /api/generate — generate, build, and publish an extension (SSE)
+	app.post('/api/generate', async (req, res) => {
+		const body = req.body as GenerateRequest;
+		if (!body.message) {
+			res.status(400).json({ error: 'message is required' });
+			return;
+		}
+
+		// Set up SSE
+		res.setHeader('Content-Type', 'text/event-stream');
+		res.setHeader('Cache-Control', 'no-cache');
+		res.setHeader('Connection', 'keep-alive');
+		res.flushHeaders();
+
+		const sendEvent = (event: GenerateEvent) => {
+			res.write(`data: ${JSON.stringify(event)}\n\n`);
+		};
+
+		try {
+			// Determine extension name and branch
+			const extensionName = body.extensionName || deriveExtensionName(body.message);
+			let branch = body.branch || 'main';
+			let existingSource: string | undefined;
+			let parentBranch: string | undefined;
+
+			// Search for similar extensions (branch-first)
+			if (!body.extensionName) {
+				sendEvent({ type: 'progress', message: 'Searching for similar extensions...' });
+				const matches = searchExtensions(body.message);
+
+				if (matches.length > 0) {
+					const best = matches[0];
+					// Check if this is an exact match (same name)
+					const bestName = best.extensionName;
+					const bestBranch = best.branch || 'main';
+
+					// Try to read source from best match for branching
+					const source = getExtensionSource(bestName, bestBranch);
+					if (source) {
+						existingSource = source;
+						parentBranch = bestBranch;
+						// Generate a branch name for the customization
+						branch = deriveExtensionName(body.message);
+						sendEvent({
+							type: 'progress',
+							message: `Branching from ${bestName} (${bestBranch}) and adapting...`,
+							extensionName: bestName,
+						});
+					}
+				}
+
+				if (!existingSource) {
+					sendEvent({ type: 'progress', message: 'No similar extensions found. Generating from scratch...' });
+				}
+			} else {
+				// Explicit extension specified — update or branch
+				const source = getExtensionSource(body.extensionName, branch);
+				if (source) {
+					existingSource = source;
+					sendEvent({ type: 'progress', message: `Updating ${body.extensionName} (branch: ${branch})...` });
+				}
+			}
+
+			// Generate via Claude Code
+			const result = await generateExtension({
+				message: body.message,
+				existingSource,
+				extensionName,
+				onProgress: (msg) => sendEvent({ type: 'progress', message: msg }),
+			});
+
+			if (!result.success) {
+				sendEvent({ type: 'error', message: result.error || 'Generation failed' });
+				res.end();
+				cleanup(result.tempDir);
+				return;
+			}
+
+			// Read package.json from generated output for metadata
+			const pkgPath = join(result.tempDir, 'package.json');
+			let displayName = extensionName;
+			let description = body.message;
+			if (existsSync(pkgPath)) {
+				try {
+					const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+					displayName = pkg.displayName || extensionName;
+					description = pkg.description || body.message;
+				} catch {
+					// Use defaults
+				}
+			}
+
+			// Publish
+			sendEvent({ type: 'progress', message: 'Publishing to registry...' });
+			const version = '0.1.0'; // TODO: increment for updates
+			const pubResult = await publishExtension({
+				sourceDir: result.tempDir,
+				name: extensionName,
+				branch,
+				version,
+				generationPrompt: body.message,
+				parentBranch,
+				displayName,
+				description,
+			});
+
+			if (!pubResult.success) {
+				sendEvent({ type: 'error', message: pubResult.error || 'Publishing failed' });
+				res.end();
+				cleanup(result.tempDir);
+				return;
+			}
+
+			sendEvent({
+				type: 'complete',
+				message: 'Extension published!',
+				extensionId: pubResult.extensionId,
+				extensionName,
+				branch,
+				version,
+			});
+			res.end();
+			cleanup(result.tempDir);
+		} catch (err) {
+			const msg = err instanceof Error ? err.message : String(err);
+			sendEvent({ type: 'error', message: msg });
+			res.end();
+		}
+	});
+
 	// POST /api/publishers/:publisher/extensions/:name/:version/stats — accept stats (no-op)
 	app.post('/api/publishers/:publisher/extensions/:name/:version/stats', (_req, res) => {
 		res.status(200).json({ ok: true });
 	});
 
 	return app;
+}
+
+function cleanup(dir: string): void {
+	try {
+		rmSync(dir, { recursive: true, force: true });
+	} catch {
+		// Best effort
+	}
 }
 
 const PORT = parseInt(process.env.PORT ?? '3000', 10);

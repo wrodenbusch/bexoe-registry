@@ -2,6 +2,8 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ExtensionIndex, ExtensionEntry } from './types.js';
 
+export { type ExtensionIndex, type ExtensionEntry };
+
 const DATA_DIR = join(import.meta.dirname, '..', 'data');
 const INDEX_PATH = join(DATA_DIR, 'index.json');
 
@@ -50,4 +52,21 @@ export function searchExtensions(text: string): ExtensionEntry[] {
 		|| e.shortDescription.toLowerCase().includes(lower)
 		|| e.tags.some(t => t.toLowerCase().includes(lower))
 	);
+}
+
+/**
+ * Reads the extension source (src/extension.ts) from a Git repo branch.
+ * Returns undefined if the repo or branch doesn't exist.
+ */
+export function getExtensionSource(extensionName: string, branch: string): string | undefined {
+	const { execSync } = require('child_process') as typeof import('child_process');
+	const repoDir = join(DATA_DIR, 'repos', 'bexoe', `${extensionName}.git`);
+	if (!existsSync(repoDir)) {
+		return undefined;
+	}
+	try {
+		return execSync(`git show "${branch}:src/extension.ts"`, { cwd: repoDir, encoding: 'utf-8' });
+	} catch {
+		return undefined;
+	}
 }
