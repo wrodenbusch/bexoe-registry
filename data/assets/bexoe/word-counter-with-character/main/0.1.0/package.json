@@ -1,0 +1,21 @@
+{
+  "name": "bexoe-word-counter",
+  "displayName": "Bexoe Word Counter",
+  "description": "Displays word count and character count in the status bar",
+  "version": "0.1.0",
+  "publisher": "bexoe",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": ["Other"],
+  "main": "./out/extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "bexoe.wordCounter.showCounts",
+        "title": "Bexoe: Show Word & Character Count"
+      }
+    ]
+  }
+}

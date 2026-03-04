@@ -1,4 +1,5 @@
 import { readFileSync, existsSync } from 'node:fs';
+import { execSync as execSyncFn } from 'node:child_process';
 import { join } from 'node:path';
 import type { ExtensionIndex, ExtensionEntry } from './types.js';
 
@@ -59,13 +60,12 @@ export function searchExtensions(text: string): ExtensionEntry[] {
  * Returns undefined if the repo or branch doesn't exist.
  */
 export function getExtensionSource(extensionName: string, branch: string): string | undefined {
-	const { execSync } = require('child_process') as typeof import('child_process');
 	const repoDir = join(DATA_DIR, 'repos', 'bexoe', `${extensionName}.git`);
 	if (!existsSync(repoDir)) {
 		return undefined;
 	}
 	try {
-		return execSync(`git show "${branch}:src/extension.ts"`, { cwd: repoDir, encoding: 'utf-8' });
+		return execSyncFn(`git show "${branch}:src/extension.ts"`, { cwd: repoDir, encoding: 'utf-8' });
 	} catch {
 		return undefined;
 	}

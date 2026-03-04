@@ -3,7 +3,7 @@
  * Handles Git repo management, VSIX placement, asset extraction, and index updates.
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync, readdirSync, statSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { execSync } from 'node:child_process';
@@ -114,17 +114,56 @@ function commitToRepo(
 	const isNew = !existsSync(repoDir);
 
 	if (isNew) {
-		mkdirSync(join(repoDir, '..'), { recursive: true });
-		execSync(`git init --bare "${repoDir}"`);
+		// For new repos: init a non-bare repo in a temp dir, commit, then clone to bare
+		commitToNewRepo(repoDir, sourceDir, branch, version, message);
+	} else {
+		// For existing repos: use worktrees
+		commitToExistingRepo(repoDir, sourceDir, branch, parentBranch, version, message);
 	}
+}
 
-	// Create a temporary worktree
+function commitToNewRepo(
+	repoDir: string,
+	sourceDir: string,
+	branch: string,
+	version: string,
+	message: string,
+): void {
+	const tempRepo = `${sourceDir}-init`;
+	try {
+		// Init a regular repo, commit files, then convert to bare
+		execSync(`git init "${tempRepo}"`, { stdio: 'ignore' });
+		execSync(`git -C "${tempRepo}" checkout -b "${branch}"`, { stdio: 'ignore' });
+
+		copyDirContents(sourceDir, tempRepo);
+
+		execSync('git add -A', { cwd: tempRepo });
+		execSync(`git commit -m "${message.replace(/"/g, '\\"')}"`, { cwd: tempRepo });
+		execSync(`git tag "${branch}/v${version}"`, { cwd: tempRepo });
+
+		// Clone to bare repo
+		mkdirSync(join(repoDir, '..'), { recursive: true });
+		execSync(`git clone --bare "${tempRepo}" "${repoDir}"`, { stdio: 'ignore' });
+	} finally {
+		try {
+			rmSync(tempRepo, { recursive: true, force: true });
+		} catch {
+			// Best effort
+		}
+	}
+}
+
+function commitToExistingRepo(
+	repoDir: string,
+	sourceDir: string,
+	branch: string,
+	parentBranch: string | undefined,
+	version: string,
+	message: string,
+): void {
 	const worktreeDir = `${sourceDir}-worktree`;
 	try {
-		if (isNew) {
-			// New repo: create an orphan branch
-			execSync(`git worktree add --orphan -b "${branch}" "${worktreeDir}"`, { cwd: repoDir });
-		} else if (branchExists(repoDir, branch)) {
+		if (branchExists(repoDir, branch)) {
 			// Existing branch: check it out
 			execSync(`git worktree add "${worktreeDir}" "${branch}"`, { cwd: repoDir });
 		} else {

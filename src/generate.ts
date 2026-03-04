@@ -40,6 +40,7 @@ export async function generateExtension(opts: GenerateOptions): Promise<Generate
 	return new Promise((resolve) => {
 		const child = spawn('claude', [
 			'--print',
+			'--verbose',
 			'--output-format', 'stream-json',
 			'--allowedTools', 'Write,Bash,Read,Glob',
 			'-p', prompt,

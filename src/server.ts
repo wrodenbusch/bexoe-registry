@@ -126,7 +126,18 @@ export function createApp(baseUrl?: string): express.Express {
 			// Search for similar extensions (branch-first)
 			if (!body.extensionName) {
 				sendEvent({ type: 'progress', message: 'Searching for similar extensions...' });
-				const matches = searchExtensions(body.message);
+				// Search by full message first, then by individual keywords
+				let matches = searchExtensions(body.message);
+				if (matches.length === 0) {
+					const keywords = body.message.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+					for (const kw of keywords) {
+						const kwMatches = searchExtensions(kw);
+						if (kwMatches.length > 0) {
+							matches = kwMatches;
+							break;
+						}
+					}
+				}
 
 				if (matches.length > 0) {
 					const best = matches[0];
