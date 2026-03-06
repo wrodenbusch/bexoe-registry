@@ -114,7 +114,8 @@ function intersect(existing: ExtensionEntry[] | null, incoming: ExtensionEntry[]
 
 function toRawExtension(entry: ExtensionEntry, flags: number, baseUrl: string): RawGalleryExtension {
 	const versions: RawGalleryVersion[] = entry.versions.map(v => {
-		const assetUri = `${baseUrl}/assets/${entry.publisher.publisherName}/${entry.extensionName}/${v.version}`;
+		const branch = entry.branch || 'main';
+		const assetUri = `${baseUrl}/assets/${entry.publisher.publisherName}/${entry.extensionName}/${branch}/${v.version}`;
 		return {
 			version: v.version,
 			lastUpdated: v.lastUpdated,

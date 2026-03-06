@@ -14,7 +14,7 @@ export function createApp(baseUrl?: string): express.Express {
 	app.use((_req, res, next) => {
 		res.setHeader('Access-Control-Allow-Origin', '*');
 		res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-		res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+		res.setHeader('Access-Control-Allow-Headers', '*');
 		if (_req.method === 'OPTIONS') {
 			res.sendStatus(204);
 			return;
@@ -51,40 +51,40 @@ export function createApp(baseUrl?: string): express.Express {
 		res.json(ext);
 	});
 
-	// GET /api/assets/:publisher/:name/:version/:assetType — serve assets
-	app.get('/api/assets/:publisher/:name/:version/:assetType', (req, res) => {
-		const { publisher, name, version, assetType } = req.params;
+	// GET /api/assets/:publisher/:name/:branch/:version/:assetType — serve assets
+	app.get('/api/assets/:publisher/:name/:branch/:version/:assetType', (req, res) => {
+		const { publisher, name, branch, version, assetType } = req.params;
 		const dataDir = getDataDir();
 
 		// Map asset types to file paths
 		const assetPaths: Record<string, { dir: string; filename: string; contentType: string }> = {
 			'Microsoft.VisualStudio.Services.VSIXPackage': {
-				dir: join(dataDir, 'extensions', publisher, name, version),
+				dir: join(dataDir, 'extensions', publisher, name, branch, version),
 				filename: `${publisher}.${name}-${version}.vsix`,
 				contentType: 'application/vsix',
 			},
 			'Microsoft.VisualStudio.Services.Icons.Default': {
-				dir: join(dataDir, 'assets', publisher, name, version),
+				dir: join(dataDir, 'assets', publisher, name, branch, version),
 				filename: 'icon.png',
 				contentType: 'image/png',
 			},
 			'Microsoft.VisualStudio.Services.Content.Details': {
-				dir: join(dataDir, 'assets', publisher, name, version),
+				dir: join(dataDir, 'assets', publisher, name, branch, version),
 				filename: 'README.md',
 				contentType: 'text/markdown',
 			},
 			'Microsoft.VisualStudio.Services.Content.Changelog': {
-				dir: join(dataDir, 'assets', publisher, name, version),
+				dir: join(dataDir, 'assets', publisher, name, branch, version),
 				filename: 'CHANGELOG.md',
 				contentType: 'text/markdown',
 			},
 			'Microsoft.VisualStudio.Code.Manifest': {
-				dir: join(dataDir, 'assets', publisher, name, version),
+				dir: join(dataDir, 'assets', publisher, name, branch, version),
 				filename: 'package.json',
 				contentType: 'application/json',
 			},
 			'Microsoft.VisualStudio.Services.Content.License': {
-				dir: join(dataDir, 'assets', publisher, name, version),
+				dir: join(dataDir, 'assets', publisher, name, branch, version),
 				filename: 'LICENSE',
 				contentType: 'text/plain',
 			},
