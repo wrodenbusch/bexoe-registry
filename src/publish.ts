@@ -139,7 +139,7 @@ function commitToNewRepo(
 
 		execSync('git add -A', { cwd: tempRepo });
 		execSync(`git commit -m "${message.replace(/"/g, '\\"')}"`, { cwd: tempRepo });
-		execSync(`git tag "${branch}/v${version}"`, { cwd: tempRepo });
+		execSync(`git tag -f "${branch}/v${version}"`, { cwd: tempRepo });
 
 		// Clone to bare repo
 		mkdirSync(join(repoDir, '..'), { recursive: true });
@@ -178,7 +178,7 @@ function commitToExistingRepo(
 		// Stage, commit, and tag
 		execSync('git add -A', { cwd: worktreeDir });
 		execSync(`git commit -m "${message.replace(/"/g, '\\"')}" --allow-empty`, { cwd: worktreeDir });
-		execSync(`git tag "${branch}/v${version}"`, { cwd: worktreeDir });
+		execSync(`git tag -f "${branch}/v${version}"`, { cwd: worktreeDir });
 	} finally {
 		// Clean up worktree
 		try {

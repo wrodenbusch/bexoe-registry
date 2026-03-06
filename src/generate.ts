@@ -38,7 +38,8 @@ export async function generateExtension(opts: GenerateOptions): Promise<Generate
 	opts.onProgress('Generating extension source...');
 
 	return new Promise((resolve) => {
-		const child = spawn('claude', [
+		const claudePath = join(process.env.HOME || '/home/will', '.local', 'bin', 'claude');
+		const child = spawn(claudePath, [
 			'--print',
 			'--verbose',
 			'--output-format', 'stream-json',
@@ -47,7 +48,7 @@ export async function generateExtension(opts: GenerateOptions): Promise<Generate
 		], {
 			cwd: tempDir,
 			stdio: ['ignore', 'pipe', 'pipe'],
-			env: { ...process.env, HOME: process.env.HOME },
+			env: (() => { const e: Record<string, string | undefined> = { ...process.env, HOME: process.env.HOME }; delete e.CLAUDECODE; return e; })(),
 		});
 
 		let stderr = '';
